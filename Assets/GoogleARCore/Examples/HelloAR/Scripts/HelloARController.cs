@@ -1,25 +1,7 @@
-//-----------------------------------------------------------------------
-// <copyright file="HelloARController.cs" company="Google LLC">
-//
-// Copyright 2017 Google LLC. All Rights Reserved.
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-// http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-//
-// </copyright>
-//-----------------------------------------------------------------------
 
 namespace GoogleARCore.Examples.HelloAR
 {
+    using System.Collections;
     using System.Collections.Generic;
     using GoogleARCore;
     using GoogleARCore.Examples.Common;
@@ -75,6 +57,17 @@ namespace GoogleARCore.Examples.HelloAR
         public GameObject menuTop;
         public GameObject menuBottom;
         public GameObject btnShowMenu;
+        public GameObject HouseOptionPanel;
+        public Toggle toggleRoof;
+        public Toggle toggleWalls;
+        public Toggle toggleWindows;
+        public Toggle toggleDoors;
+        public RawImage handAnimation;
+
+        private GameObject[] externalWalls;
+        private GameObject[] roof;
+        private GameObject[] windows;
+        private GameObject[] doors;
 
         /// <summary>
         /// The Unity Awake() method.
@@ -88,6 +81,8 @@ namespace GoogleARCore.Examples.HelloAR
             // ArquiteturaAR
             houseObjectScale = 0.01f;
             scaleText.text = "";
+            handAnimation.enabled = true;
+            StartCoroutine(HandAnimationTime());
         }
 
         /// <summary>
@@ -152,6 +147,12 @@ namespace GoogleARCore.Examples.HelloAR
                             prefab = GameObjectHorizontalPlanePrefab;
                         }
 
+                        // ArquiteturaAR
+                        toggleWalls.isOn = true;
+                        toggleRoof.isOn = true;
+                        toggleDoors.isOn = true;
+                        toggleWindows.isOn = true;
+
                         // Instantiate prefab at the hit pose.
                         var gameObject = Instantiate(prefab, hit.Pose.position, hit.Pose.rotation);
 
@@ -160,9 +161,9 @@ namespace GoogleARCore.Examples.HelloAR
                         gameObject.transform.Rotate(0, k_PrefabRotation, 0, Space.Self);
 
                         // ArquiteturaAR
-                        houseObjectScale = 0.01f;
+                        houseObjectScale = 0.02f;
                         gameObject.transform.localScale = new Vector3(houseObjectScale, houseObjectScale, houseObjectScale);
-                        scaleText.text = "Escala: 1:100";
+                        scaleText.text = "Escala: 1:50";                        
 
                         // Create an anchor to allow ARCore to track the hitpoint as understanding of
                         // the physical world evolves.
@@ -252,7 +253,7 @@ namespace GoogleARCore.Examples.HelloAR
 
         // ArquiteturaAR --------------------------------------------------------------------------------------------
 
-        public void ZoomIn()
+        public void ZoomIn() //deprecated (nao esta em uso)
         {
             GameObject houseObject = GameObject.FindGameObjectWithTag("casa");
 
@@ -295,7 +296,7 @@ namespace GoogleARCore.Examples.HelloAR
             }
         }
 
-        public void ZoomOut()
+        public void ZoomOut() //deprecated (nao esta em uso)
         {
             GameObject houseObject = GameObject.FindGameObjectWithTag("casa");
 
@@ -359,7 +360,131 @@ namespace GoogleARCore.Examples.HelloAR
 
         public void DestroyHouseObject()
         {
+            CloseHouseOptionPanel();
+            toggleWalls.isOn = true;
+            toggleRoof.isOn = true;
+            toggleDoors.isOn = true;
+            toggleWindows.isOn = true;
             Destroy(GameObject.FindGameObjectWithTag("casa"));
+        }
+
+        public void ShowRoof(bool value)
+        {
+            GameObject[] houseObject;
+            if (!value)
+            {
+                houseObject = GameObject.FindGameObjectsWithTag("Teto");
+                roof = houseObject;
+                foreach (var item in houseObject)
+                {
+                    item.SetActive(false);
+                }
+            }
+            else
+            {
+                houseObject = roof;
+                foreach (var item in houseObject)
+                {
+                    item.SetActive(true);
+                }
+                roof = null;
+            }
+        }
+
+        public void ShowExternalWall(bool value)
+        {
+            GameObject[] houseObject;
+            if (!value)
+            {
+                houseObject = GameObject.FindGameObjectsWithTag("ParedeExterna");
+                externalWalls = houseObject;
+                foreach (var item in houseObject)
+                {
+                    item.SetActive(false);
+                }
+            }
+            else
+            {
+                houseObject = externalWalls;
+                foreach (var item in houseObject)
+                {
+                    item.SetActive(true);
+                }
+                externalWalls = null;
+            }
+        }
+
+        public void ShowWindows(bool value)
+        {
+            GameObject[] houseObject;
+            if (!value)
+            {
+                houseObject = GameObject.FindGameObjectsWithTag("Janela");
+                windows = houseObject;
+                foreach (var item in houseObject)
+                {
+                    item.SetActive(false);
+                }
+            }
+            else
+            {
+                houseObject = windows;
+                foreach (var item in houseObject)
+                {
+                    item.SetActive(true);
+                }
+                windows = null;
+            }
+        }
+
+        public void ShowDoors(bool value)
+        {
+            GameObject[] houseObject;
+            if (!value)
+            {
+                houseObject = GameObject.FindGameObjectsWithTag("Porta");
+                doors = houseObject;
+                foreach (var item in houseObject)
+                {
+                    item.SetActive(false);
+                }
+            }
+            else
+            {
+                houseObject = doors;
+                foreach (var item in houseObject)
+                {
+                    item.SetActive(true);
+                }
+                doors = null;
+            }
+        }
+
+        public void ShowHouseOptionPanel()
+        {
+            if (GameObject.FindGameObjectWithTag("casa"))
+            {
+                HouseOptionPanel.SetActive(true);
+            }
+        }
+
+        public void CloseHouseOptionPanel()
+        {
+            HouseOptionPanel.SetActive(false);
+        }
+
+        private void OnApplicationPause(bool pause)
+        {
+            if (pause)
+            {
+                Application.Quit();
+            }
+        }
+
+        IEnumerator HandAnimationTime()
+        {
+            yield return new WaitForSeconds(5);
+            handAnimation.enabled = false;
         }
 
     }

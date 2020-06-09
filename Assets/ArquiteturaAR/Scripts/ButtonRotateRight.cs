@@ -21,7 +21,7 @@ public class ButtonRotateRight : MonoBehaviour, IPointerDownHandler, IPointerUpH
         {
             if (houseObject != null)
             {
-                houseObject.transform.transform.Rotate(Vector3.down, speed * Time.deltaTime, Space.Self);
+                houseObject.transform.Rotate(Vector3.down, speed * Time.deltaTime, Space.Self);
             }
         }
     }

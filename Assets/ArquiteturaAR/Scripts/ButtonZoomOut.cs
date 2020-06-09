@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class ButtonRotateLeft : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
+public class ButtonZoomOut : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
 {
     private bool isPressed;
     private GameObject houseObject;
@@ -12,16 +12,17 @@ public class ButtonRotateLeft : MonoBehaviour, IPointerDownHandler, IPointerUpHa
     void Start()
     {
         isPressed = false;
-        speed = 30.0f;
+        speed = 0.005f;
     }
 
     void Update()
     {
         if (isPressed)
         {
-            if (houseObject != null)
+            if (houseObject != null && houseObject.transform.localScale.x > 0.01f)
             {
-                houseObject.transform.Rotate(Vector3.up, speed * Time.deltaTime, Space.Self);
+                float maxScale = houseObject.transform.localScale.x - 5.0f;
+                houseObject.transform.localScale = Vector3.Lerp(houseObject.transform.localScale, new Vector3(maxScale, maxScale, maxScale), speed * Time.deltaTime);
             }
         }
     }
@@ -37,6 +38,4 @@ public class ButtonRotateLeft : MonoBehaviour, IPointerDownHandler, IPointerUpHa
         isPressed = false;
         houseObject = null;
     }
-
-
 }
