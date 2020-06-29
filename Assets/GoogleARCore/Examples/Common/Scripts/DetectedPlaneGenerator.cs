@@ -97,5 +97,25 @@ namespace GoogleARCore.Examples.Common
                 }
             }
         }
+
+        public void HidePlanesChromakey()
+        {
+            DetectedPlaneVisualizer[] objects = GameObject.FindObjectsOfType<DetectedPlaneVisualizer>();
+            foreach (var item in objects)
+            {
+                item.ShowPlanes(false);
+            }
+            isPlaneHidden = true;
+        }
+
+        public void ShowPlanesChromakey()
+        {
+            DetectedPlaneVisualizer[] objects = GameObject.FindObjectsOfType<DetectedPlaneVisualizer>();
+            foreach (var item in objects)
+            {
+                item.ShowPlanes(true);
+            }
+            isPlaneHidden = false;
+        }
     }
 }

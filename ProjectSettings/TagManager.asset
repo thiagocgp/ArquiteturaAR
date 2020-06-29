@@ -10,6 +10,7 @@ TagManager:
   - Janela
   - Porta
   - Teto
+  - video
   layers:
   - Default
   - TransparentFX
